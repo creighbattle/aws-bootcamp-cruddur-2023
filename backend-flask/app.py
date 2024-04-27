@@ -55,6 +55,7 @@ provider.add_span_processor(processor)
 trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
 
+
 app = Flask(__name__)
 
 
