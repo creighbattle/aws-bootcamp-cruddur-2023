@@ -1,7 +1,7 @@
 import './ProfileInfo.css';
 import {ReactComponent as ElipsesIcon} from './svg/elipses.svg';
 import React from "react";
-import { Amplify } from 'aws-amplify';
+import { signOut } from 'aws-amplify/auth';
 
 export default function ProfileInfo(props) {
   const [popped, setPopped] = React.useState(false);
@@ -10,9 +10,9 @@ export default function ProfileInfo(props) {
     setPopped(!popped)
   }
 
-  const signOut = async () => {
+  const handleSignOut = async () => {
     try {
-        //await Auth.signOut({ global: true });
+        await signOut({ global: true });
         window.location.href = "/"
     } catch (error) {
         console.log('error signing out: ', error);
@@ -30,13 +30,13 @@ export default function ProfileInfo(props) {
   return (
     <div className={classes()}>
       <div className="profile-dialog">
-        <button onClick={signOut}>Sign Out</button> 
+        <button onClick={handleSignOut}>Sign Out</button> 
       </div>
       <div className="profile-info" onClick={click_pop}>
         <div className="profile-avatar"></div>
         <div className="profile-desc">
-          <div className="profile-display-name">{props.user.display_name || "My Name" }</div>
-          <div className="profile-username">@{props.user.handle || "handle"}</div>
+          <div className="profile-display-name">{props.user.name || "My Name" }</div>
+          <div className="profile-username">@{props.user.preferred_username || "handle"}</div>
         </div>
         <ElipsesIcon className='icon' />
       </div>

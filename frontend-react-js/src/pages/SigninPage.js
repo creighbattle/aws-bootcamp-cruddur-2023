@@ -1,11 +1,8 @@
 import './SigninPage.css';
-import React from "react";
+import React, { useEffect } from "react";
 import {ReactComponent as Logo} from '../components/svg/logo.svg';
 import { Link } from "react-router-dom";
-//import { Auth } from 'aws-amplify';
-
-// [TODO] Authenication
-import Cookies from 'js-cookie'
+import { signIn, getCurrentUser } from 'aws-amplify/auth';
 
 export default function SigninPage() {
 
@@ -14,23 +11,41 @@ export default function SigninPage() {
   //const [errors, setErrors] = React.useState('');
   const [cognitoErrors, setCognitoErrors] = React.useState('');
 
+  useEffect(() => {
+    checkForUser();
+  }, []);
+
+  const checkForUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      console.log('wtf');
+      console.log(user)
+      window.location.href = "/"
+    } catch (error) {
+      console.log('no user signin')
+    }
+  }
+
   const onsubmit = async (event) => {
     setCognitoErrors('')
     event.preventDefault();
-    try {
-      // Auth.signIn(username, password)
-      //   .then(user => {
-      //     localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
-      //     window.location.href = "/"
-      //   })
-      //   .catch(err => { console.log('Error!', err) });
-    } catch (error) {
-      if (error.code == 'UserNotConfirmedException') {
-        window.location.href = "/confirm"
-      }
-      setCognitoErrors(error.message)
-    }
-    return false
+    console.log(email)
+    console.log(password)
+   
+    signIn({username: email, password})
+      .then(user => {
+        console.log(user)
+        console.log('yay')
+        //localStorage.setItem("access_token", user.signInUserSession.accessToken.jwtToken)
+        window.location.href = "/"
+      })
+      .catch(err => { 
+        console.log('Error!', err) 
+        if (err.code == 'UserNotConfirmedException') {
+          window.location.href = "/confirm"
+        }
+        setCognitoErrors(err.message)
+      });
   }
   
   let errors;
