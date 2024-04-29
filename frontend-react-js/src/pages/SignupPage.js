@@ -4,9 +4,6 @@ import {ReactComponent as Logo} from '../components/svg/logo.svg';
 import { Link } from "react-router-dom";
 import { signUp } from 'aws-amplify/auth';
 
-// [TODO] Authenication
-import Cookies from 'js-cookie'
-
 export default function SignupPage() {
 
   // Username is Eamil
@@ -33,18 +30,23 @@ export default function SignupPage() {
   const onsubmit = async (event) => {
     event.preventDefault();
     setErrors('')
+    console.log('run')
+    console.log(name);
+    console.log(email);
+    console.log(username);
     try {
         const { user } = await signUp({
           username: email,
           password: password,
-          attributes: {
+          options: {
+            userAttributes: {
               name: name,
               email: email,
               preferred_username: username,
-          },
-          autoSignIn: { // optional - enables auto sign in after user is confirmed
-              enabled: true,
+            },
+            autoSignIn: true
           }
+          
         });
         console.log(user);
         window.location.href = `/confirm?email=${email}`

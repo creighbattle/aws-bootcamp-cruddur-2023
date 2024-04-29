@@ -2,7 +2,7 @@ import './ConfirmationPage.css';
 import React from "react";
 import { useParams } from 'react-router-dom';
 import {ReactComponent as Logo} from '../components/svg/logo.svg';
-import { resendSignUpCode } from 'aws-amplify/auth';
+import { resendSignUpCode, confirmSignUp } from 'aws-amplify/auth';
 
 export default function ConfirmationPage() {
   const [email, setEmail] = React.useState('');
@@ -42,7 +42,7 @@ export default function ConfirmationPage() {
     event.preventDefault();
     setErrors('')
     try {
-      await Auth.confirmSignUp(email, code);
+      await confirmSignUp({username: email, confirmationCode: code});
       window.location.href = "/"
     } catch (error) {
       setErrors(error.message)
